@@ -10,7 +10,7 @@ In addition, we aim to build workflows and pipelines to integrate machine learni
 The mnist data can be set up as follows.
 
 ```shell
-nix-build -f https://github.com/hasktorch/hasktorch-datasets/archive/main.tar.gz datasets/mnist.nix -o data
+nix-build https://github.com/hasktorch/hasktorch-datasets/archive/main.tar.gz -A datasets.mnist -o data
 ```
 
 # Setup Models
@@ -18,7 +18,7 @@ nix-build -f https://github.com/hasktorch/hasktorch-datasets/archive/main.tar.gz
 Build the resent18 torchscript model as follows.
 
 ```shell
-nix-build -f https://github.com/hasktorch/hasktorch-datasets/archive/main.tar.gz models/torchvision.nix -A resnet18 -o resnet18
+nix-build https://github.com/hasktorch/hasktorch-datasets/archive/main.tar.gz -A models.torchvision.resnet18 -o resnet18
 ```
 
 # Processing of datasets
