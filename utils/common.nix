@@ -20,4 +20,5 @@ with pkgs;
       rmdir $out/$subdir
     fi
     '';
+  cleanGit = (import sources.haskell-nix {}).pkgs.haskell-nix.haskellLib.cleanGit;
 }
