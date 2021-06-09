@@ -1,0 +1,50 @@
+{
+    "haskell-nix": {
+        "branch": "master",
+        "description": "Alternative Haskell Infrastructure for Nixpkgs",
+        "homepage": "https://input-output-hk.github.io/haskell.nix",
+        "owner": "input-output-hk",
+        "repo": "haskell.nix",
+        "rev": "ecde924f14675cb23a3787af1557cd0a9b48d787",
+        "sha256": "07ngf0v0pj7i820vjcfm68hfliacjygiq99w12rw8hwxskw442ls",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/haskell.nix/archive/ecde924f14675cb23a3787af1557cd0a9b48d787.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "527494090f7075ed5e3aa15ef7093846e5e25d52",
+        "sha256": "1hahf0i0iix1iyzaaq5a7rbgyfm3xjcfl69lm1b5mas1p8vdimih",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/527494090f7075ed5e3aa15ef7093846e5e25d52.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixpkgs-unstable",
+        "description": "Nix Packages collection",
+        "homepage": "",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "12e7af1cfb3ab5bbbbd1d213a0b17c11ce9d3f2f",
+        "sha256": "0xkbvl1gqm1s5s2cfd47bbhd0hm3gws1f2n0n2gnsm8grv60wsx1",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/12e7af1cfb3ab5bbbbd1d213a0b17c11ce9d3f2f.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "yolov5": {
+        "branch": "master",
+        "description": "YOLOv5 in PyTorch > ONNX > CoreML > TFLite",
+        "homepage": "https://ultralytics.com/yolov5",
+        "owner": "ultralytics",
+        "repo": "yolov5",
+        "rev": "b6fdd2e5e54aa3464b360fe6d9c6f3cb216f3778",
+        "sha256": "1b1h1qjzg3445kpygymvv2674qqzrldv96bk17l2qrfn8af49lvq",
+        "type": "tarball",
+        "url": "https://github.com/ultralytics/yolov5/archive/b6fdd2e5e54aa3464b360fe6d9c6f3cb216f3778.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
