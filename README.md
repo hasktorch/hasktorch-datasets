@@ -10,7 +10,7 @@ In addition, we aim to build workflows and pipelines to integrate machine learni
 The mnist data can be set up as follows.
 
 ```shell
-nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A datasets.mnist -o data
+$ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A datasets.mnist -o data
 ```
 
 # Setup Models
@@ -18,9 +18,22 @@ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar
 Build the resent18 torchscript model as follows.
 
 ```shell
-nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A models.torchvision.resnet18 -o resnet18 --option sandbox false
+$ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A models.torchvision.resnet18 -o resnet18 --option sandbox false
 ```
 
 # Processing of datasets
 
 The utils directory provides tools for mixing and annotating two different datasets.
+
+```shell
+$ cat << EOF > datasets-1to1.nix
+{rate}:
+import ./utils/mix.nix {
+    datasetA = import ./datasets/a.nix {};
+    datasetB = import ./datasets/b.nix {};
+    rate = rate;
+};
+EOF
+$ nix-build --arg rate 0.5 -o mixed-datasets ./datasets-1to1.nix
+```
+
