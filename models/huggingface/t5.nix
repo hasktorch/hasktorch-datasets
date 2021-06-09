@@ -8,6 +8,7 @@ let
     [ transformers
       packaging
       sentencepiece
+      pytorch
     ]
   );
 in

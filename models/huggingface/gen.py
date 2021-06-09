@@ -1,3 +1,4 @@
+import torch
 from transformers import T5Tokenizer, T5Model
 
 tokenizer = T5Tokenizer.from_pretrained('t5-small')
