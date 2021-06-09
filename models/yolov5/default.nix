@@ -15,6 +15,9 @@ let
       scipy
       tensorflow-tensorboard
       torchvision
+      pandas
+      tqdm
+      seaborn
     ]
   );
 in
@@ -23,13 +26,13 @@ in
     version = "2021-06-09";
     nativeBuildInputs = [
       myPython
+      curl
     ];
     buildInputs =  [];
-    src = cleanGit {
-      name = "root";
-      src = ./.;
-    };
+    src = sources.yolov5;
     buildPhase = ''
+      export CURL_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
+      #export REQUESTS_CA_BUNDLE=""
       python models/export.py --weights yolov5s.pt --img 640 --batch 1
     '';
     installPhase = ''
