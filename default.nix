@@ -6,4 +6,7 @@ with pkgs;
   datasets = {
     mnist = import ./datasets/mnist.nix {};
   };
+  models = {
+    torchvision = import ./models/torchvision/default.nix {};
+  };
 }
