@@ -8,6 +8,7 @@ let
       packaging
       sentencepiece
       pytorch
+      black
     ]
   );
 in
