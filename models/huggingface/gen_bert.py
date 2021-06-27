@@ -1,37 +1,33 @@
-from transformers import BertModel, BertTokenizer, BertConfig
+import argparse
 import torch
+from transformers import AutoTokenizer, BertForMaskedLM
 
-enc = BertTokenizer.from_pretrained("bert-base-uncased")
 
-# Tokenizing input text
-text = "[CLS] Who was Jim Henson ? [SEP] Jim Henson was a puppeteer [SEP]"
-tokenized_text = enc.tokenize(text)
+def main(args=None) -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", required=True, choices=["trace", "state-dict"])
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--input")
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
 
-# Masking one of the input tokens
-masked_index = 8
-tokenized_text[masked_index] = '[MASK]'
-indexed_tokens = enc.convert_tokens_to_ids(tokenized_text)
-segments_ids = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
+    if args.mode == "trace":
+        tokenizer = AutoTokenizer.from_pretrained(args.model)
+        model = BertForMaskedLM.from_pretrained(args.model, torchscript=True)
+        model.eval()
+        inputs = tokenizer(args.input, return_tensors="pt")  # Batch size 1
+        print(inputs)
+        traced_script_module = torch.jit.trace(
+            model, (inputs.input_ids, inputs.attention_mask, inputs.token_type_ids)
+        )
+        traced_script_module.save(args.output)
+    elif args.mode == "state-dict":
+        model = BertForMaskedLM.from_pretrained(args.model, torchscript=False)
+        d = dict(model.state_dict())
+        torch.save(d, args.output, _use_new_zipfile_serialization=True)
+    else:
+        raise NotImplementedError()
 
-# Creating a dummy input
-tokens_tensor = torch.tensor([indexed_tokens])
-segments_tensors = torch.tensor([segments_ids])
-dummy_input = [tokens_tensor, segments_tensors]
 
-# Initializing the model with the torchscript flag
-# Flag set to True even though it is not necessary as this model does not have an LM Head.
-config = BertConfig(vocab_size_or_config_json_file=32000, hidden_size=768,
-    num_hidden_layers=12, num_attention_heads=12, intermediate_size=3072, torchscript=True)
-
-# Instantiating the model
-model = BertModel(config)
-
-# The model needs to be in evaluation mode
-model.eval()
-
-# If you are instantiating the model with `from_pretrained` you can also easily set the TorchScript flag
-model = BertModel.from_pretrained("bert-base-uncased", torchscript=True)
-
-# Creating the trace
-traced_model = torch.jit.trace(model, [tokens_tensor, segments_tensors])
-torch.jit.save(traced_model, "traced_bert.pt")
+if __name__ == "__main__":
+    main()
