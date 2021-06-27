@@ -94,6 +94,16 @@ in
         output = "t5-small-state-dict.pt";
       };
     };
+    byt5-small-state-dict = mkDerivation {
+      pname = "byt5-small-state-dict";
+      description = "ByT5-Small for conditional generation state dictionary";
+      script = "gen_t5.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "google/byt5-small";
+        output = "byt5-small-state-dict.pt";
+      };
+    };
     t5-base-state-dict = mkDerivation {
       pname = "t5-base-state-dict";
       description = "T5-Base for conditional generation state dictionary";
@@ -102,6 +112,16 @@ in
         mode = "state-dict";
         model = "t5-base";
         output = "t5-base-state-dict.pt";
+      };
+    };
+    byt5-base-state-dict = mkDerivation {
+      pname = "byt5-base-state-dict";
+      description = "ByT5-Base for conditional generation state dictionary";
+      script = "gen_t5.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "google/byt5-base";
+        output = "byt5-base-state-dict.pt";
       };
     };
     t5-large-state-dict = mkDerivation {
@@ -114,6 +134,16 @@ in
         output = "t5-large-state-dict.pt";
       };
     };
+    byt5-large-state-dict = mkDerivation {
+      pname = "byt5-large-state-dict";
+      description = "ByT5-Large for conditional generation state dictionary";
+      script = "gen_t5.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "google/byt5-large";
+        output = "byt5-large-state-dict.pt";
+      };
+    };
     t5-3b-state-dict = mkDerivation {
       pname = "t5-3b-state-dict";
       description = "T5-3B for conditional generation state dictionary";
@@ -124,6 +154,16 @@ in
         output = "t5-3b-state-dict.pt";
       };
     };
+    byt5-xl-state-dict = mkDerivation {
+      pname = "byt5-xl-state-dict";
+      description = "ByT5-XL for conditional generation state dictionary";
+      script = "gen_t5.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "google/byt5-xl";
+        output = "byt5-xl-state-dict.pt";
+      };
+    };
     t5-11b-state-dict = mkDerivation {
       pname = "t5-11b-state-dict";
       description = "T5-11B for conditional generation state dictionary";
@@ -132,6 +172,16 @@ in
         mode = "state-dict";
         model = "t5-11b";
         output = "t5-11b-state-dict.pt";
+      };
+    };
+    byt5-xxl-state-dict = mkDerivation {
+      pname = "byt5-xxl-state-dict";
+      description = "ByT5-XXL for conditional generation state dictionary";
+      script = "gen_t5.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "google/byt5-xxl";
+        output = "byt5-xxl-state-dict.pt";
       };
     };
     speech2text-small-librispeech-asr-trace = mkDerivation {
