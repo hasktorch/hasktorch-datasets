@@ -3,11 +3,15 @@
 }:
 with pkgs;
 let
+  torchaudio-bin = import ./nix/torchaudio-bin.nix { inherit pkgs; };
   myPython = python3.withPackages (ps: with ps;
     [ transformers
+      datasets
       packaging
       sentencepiece
-      pytorch
+      pytorch-bin
+      torchaudio-bin
+      soundfile
       black
     ]
   );
