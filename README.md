@@ -15,10 +15,17 @@ $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.t
 
 # Setup Models
 
-Build the resent18 torchscript model as follows.
+Build torchscript models as follows.
 
 ```shell
+# Resnet18
 $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A models.torchvision.resnet18 -o resnet18 --option sandbox false
+
+# Yolov5s
+$ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A models.yolov5 -o yolov5 --option sandbox false
+
+# Speech2Text
+$ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/e035e056b3a0827bdf1d7192afee85c88b340b74.tar.gz -A models.huggingface.speech2text-small-librispeech-asr-trace -o speech2txt --option sandbox false
 ```
 
 # Processing of datasets
