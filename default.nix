@@ -4,6 +4,7 @@
 with pkgs;
 let
   huggingface = import ./models/huggingface/default.nix {};
+  yolov5 = import ./models/yolov5/default.nix {};
 in
 {
   datasets = {
@@ -12,5 +13,6 @@ in
   models = {
     torchvision = import ./models/torchvision/default.nix {};
     inherit huggingface;
+    inherit yolov5;
   };
 }
