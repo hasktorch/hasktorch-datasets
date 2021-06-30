@@ -37,7 +37,7 @@ in
     '';
     installPhase = ''
       mkdir -p $out
-      cp yolov5s.pt $out
+      cp yolov5s.torchscript.pt $out
     '';
     #phases = [ "installPhase" ];
     meta = with lib; {
