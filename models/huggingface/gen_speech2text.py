@@ -22,11 +22,15 @@ def main(args=None) -> None:
     parser.add_argument("--input")
     parser.add_argument("--decoder-input")
     parser.add_argument("--output", required=True)
+    parser.add_argument("--tokenizer-output", required=True)
     args = parser.parse_args()
+
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    with open(args.tokenizer_output, 'w') as fp:
+        fp.write(tokenizer.backend_tokenizer.to_str(pretty=False))
 
     if args.mode == "trace":
         processor = Speech2TextProcessor.from_pretrained(args.model)
-        tokenizer = AutoTokenizer.from_pretrained(args.model)
         model = Speech2TextForConditionalGeneration.from_pretrained(
             args.model, torchscript=True
         )

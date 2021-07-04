@@ -32,12 +32,14 @@ let
         --mode "${scriptArgs.mode}" \
         --model "${scriptArgs.model}" \
         ${lib.strings.optionalString (scriptArgs.mode == "trace") ''--input "${scriptArgs.input}"'' } \
-        ${lib.strings.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
-        --output "${scriptArgs.output}"
+        ${lib.strings.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py" || script == "gen_bart.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
+        --output "${scriptArgs.output}" \
+        --tokenizer-output "${scriptArgs.tokenizer-output}"
     '';
     installPhase = ''
       mkdir -p $out
       cp ${scriptArgs.output} $out
+      cp ${scriptArgs.tokenizer-output} $out
     '';
     meta = with lib; {
       inherit description;
@@ -60,16 +62,18 @@ in
         model = "bert-base-uncased";
         input = "[CLS] Who was [MASK] Henson? [SEP] He was a puppeteer [SEP]";
         output = "bert-base-uncased-trace.pt";
+        tokenizer-output = "bert-base-uncased-tokenizer.json";
       };
     };
     bert-base-uncased-state-dict = mkDerivation {
-      pname = "bert-base-uncased-trace";
+      pname = "bert-base-uncased-state-dict";
       description = "BERT-Base uncased for masked language modelling trace";
       script = "gen_bert.py";
       scriptArgs = {
         mode = "state-dict";
         model = "bert-base-uncased";
         output = "bert-base-uncased-state-dict.pt";
+        tokenizer-output = "bert-base-uncased-tokenizer.json";
       };
     };
     t5-small-trace = mkDerivation {
@@ -82,6 +86,7 @@ in
         input = "Studies have shown that owning a dog is good for you";
         decoder-input = "Studies show that";
         output = "t5-small-trace.pt";
+        tokenizer-output = "t5-small-tokenizer.json";
       };
     };
     t5-small-state-dict = mkDerivation {
@@ -92,6 +97,7 @@ in
         mode = "state-dict";
         model = "t5-small";
         output = "t5-small-state-dict.pt";
+        tokenizer-output = "t5-small-tokenizer.json";
       };
     };
     byt5-small-state-dict = mkDerivation {
@@ -102,6 +108,7 @@ in
         mode = "state-dict";
         model = "google/byt5-small";
         output = "byt5-small-state-dict.pt";
+        tokenizer-output = "byt5-small-tokenizer.json";
       };
     };
     t5-base-state-dict = mkDerivation {
@@ -112,6 +119,7 @@ in
         mode = "state-dict";
         model = "t5-base";
         output = "t5-base-state-dict.pt";
+        tokenizer-output = "t5-base-tokenizer.json";
       };
     };
     byt5-base-state-dict = mkDerivation {
@@ -122,6 +130,7 @@ in
         mode = "state-dict";
         model = "google/byt5-base";
         output = "byt5-base-state-dict.pt";
+        tokenizer-output = "byt5-base-tokenizer.json";
       };
     };
     t5-large-state-dict = mkDerivation {
@@ -132,6 +141,7 @@ in
         mode = "state-dict";
         model = "t5-large";
         output = "t5-large-state-dict.pt";
+        tokenizer-output = "t5-large-tokenizer.json";
       };
     };
     byt5-large-state-dict = mkDerivation {
@@ -142,6 +152,7 @@ in
         mode = "state-dict";
         model = "google/byt5-large";
         output = "byt5-large-state-dict.pt";
+        tokenizer-output = "byt5-large-tokenizer.json";
       };
     };
     t5-3b-state-dict = mkDerivation {
@@ -152,6 +163,7 @@ in
         mode = "state-dict";
         model = "t5-3b";
         output = "t5-3b-state-dict.pt";
+        tokenizer-output = "t5-3b-tokenizer.json";
       };
     };
     byt5-xl-state-dict = mkDerivation {
@@ -162,6 +174,7 @@ in
         mode = "state-dict";
         model = "google/byt5-xl";
         output = "byt5-xl-state-dict.pt";
+        tokenizer-output = "byt5-xl-tokenizer.json";
       };
     };
     t5-11b-state-dict = mkDerivation {
@@ -172,6 +185,7 @@ in
         mode = "state-dict";
         model = "t5-11b";
         output = "t5-11b-state-dict.pt";
+        tokenizer-output = "t5-11b-tokenizer.json";
       };
     };
     byt5-xxl-state-dict = mkDerivation {
@@ -182,6 +196,7 @@ in
         mode = "state-dict";
         model = "google/byt5-xxl";
         output = "byt5-xxl-state-dict.pt";
+        tokenizer-output = "byt5-xxl-tokenizer.json";
       };
     };
     speech2text-small-librispeech-asr-trace = mkDerivation {
@@ -194,6 +209,7 @@ in
         input = "patrickvonplaten/librispeech_asr_dummy";
         decoder-input = "Hello, my dog is cute";
         output = "speech2text-small-librispeech-asr-trace.pt";
+        tokenizer-output = "speech2text-small-librispeech-asr-tokenizer.json";
       };
     };
     speech2text-small-librispeech-asr-state-dict = mkDerivation {
@@ -204,6 +220,18 @@ in
         mode = "state-dict";
         model = "facebook/s2t-small-librispeech-asr";
         output = "speech2text-small-librispeech-asr-state-dict.pt";
+        tokenizer-output = "speech2text-small-librispeech-asr-tokenizer.json";
+      };
+    };
+    bart-base-state-dict = mkDerivation {
+      pname = "bart-base-state-dict";
+      description = "BART-Base for conditional generation state dictionary";
+      script = "gen_bart.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "facebook/bart-base";
+        output = "bart-base-state-dict.pt";
+        tokenizer-output = "bart-base-tokenizer.json";
       };
     };
   }

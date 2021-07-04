@@ -9,10 +9,14 @@ def main(args=None) -> None:
     parser.add_argument("--model", required=True)
     parser.add_argument("--input")
     parser.add_argument("--output", required=True)
+    parser.add_argument("--tokenizer-output", required=True)
     args = parser.parse_args()
 
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    with open(args.tokenizer_output, 'w') as fp:
+        fp.write(tokenizer.backend_tokenizer.to_str(pretty=False))
+
     if args.mode == "trace":
-        tokenizer = AutoTokenizer.from_pretrained(args.model)
         model = BertForMaskedLM.from_pretrained(args.model, torchscript=True)
         model.eval()
         inputs = tokenizer(args.input, return_tensors="pt")  # Batch size 1
