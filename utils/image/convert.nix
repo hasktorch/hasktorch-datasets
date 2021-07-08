@@ -1,12 +1,14 @@
 { dataset
 , from ? "jpg"
 , to ? "png"
+, resize ? ""
 , sources ? import ../nix/sources.nix
 , pkgs ? import sources.nixpkgs {}
 }:
 let
   lib = pkgs.lib;
   stdenvNoCC = pkgs.stdenvNoCC;
+  resize-option = if resize == "" then "" else "-resize " + resize;
 in
   stdenvNoCC.mkDerivation rec {
     pname = dataset.pname + "-" + from + "-to-" + to;
@@ -17,17 +19,17 @@ in
     buildInputs = [
       dataset
     ];
-    src = ./.;
-    buildPhase = ''
-    '';
+    #src = ./.;
+    unpackPhase = "true";
     installPhase = ''
       mkdir -p $out
       for i in `cd ${dataset.out}; find . -type d | grep -v '^.$'` ; do
         mkdir $out/$i
       done
       for i in `cd ${dataset.out}; find . -type f,l | grep ${from}$` ; do
-        convert ${dataset.out}/$i $out/${ "$" + "{i%" + from + "}"}${to}
+        echo ${resize-option} ${dataset.out}/$i $out/${ "$" + "{i%" + from + "}"}${to} >> convert_batch.sh
       done
+      cat convert_batch.sh | xargs -L 1 -P $NIX_BUILD_CORES convert
       for i in `cd ${dataset.out}; find . -type f,l | grep -v ${from}$` ; do
         ln -s ${dataset.out}/$i $out/$i
       done
