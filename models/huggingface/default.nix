@@ -234,4 +234,15 @@ in
         tokenizer-output = "bart-base-tokenizer.json";
       };
     };
+    bart-large-state-dict = mkDerivation {
+      pname = "bart-large-state-dict";
+      description = "BART-Large for conditional generation state dictionary";
+      script = "gen_bart.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "facebook/bart-large";
+        output = "bart-large-state-dict.pt";
+        tokenizer-output = "bart-large-tokenizer.json";
+      };
+    };
   }
