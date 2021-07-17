@@ -1,24 +1,33 @@
 { sources ? import ../../nix/sources.nix
 , pkgs ? import sources.nixpkgs {}
+, poetry2nix ? import sources.poetry2nix { inherit pkgs; poetry = pkgs.poetry; }
 }:
+
 with pkgs;
+
 let
-  torchaudio-bin = import ../../nix/torchaudio-bin.nix { inherit pkgs; };
-  myPython = python3.withPackages (ps: with ps;
-    [ transformers
-      datasets
-      packaging
-      sentencepiece
-      pytorch-bin
-      torchaudio-bin
-      soundfile
-    ]
-  );
-  mkDerivation = { pname, description, script, scriptArgs } : pkgs.stdenv.mkDerivation rec {
+
+  mkDerivation = { pname, description, script, scriptArgs } : poetry2nix.mkPoetryApplication {
     inherit pname;
     version = "2021-06-27";
+    projectDir = ./.;
+    overrides = poetry2nix.overrides.withDefaults
+      (self: super:
+        {
+          tokenizers = super.tokenizers.overridePythonAttrs (old: {
+            nativeBuildInputs = old.nativeBuildInputs ++ [ rustc cargo ];
+            buildInputs = old.buildInputs ++ [ self.setuptools-rust ];
+          });
+          torchaudio = super.torchaudio.overridePythonAttrs (old: {
+            buildInputs = old.buildInputs ++ [ self.torch ];
+            preConfigure =
+              ''
+                export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${self.torch}/${self.python.sitePackages}/torch/lib"
+              '';
+          });
+        }
+      );
     nativeBuildInputs = [
-      myPython
       curl
     ];
     buildInputs =  [];
@@ -31,14 +40,16 @@ let
       python ${script} \
         --mode "${scriptArgs.mode}" \
         --model "${scriptArgs.model}" \
-        ${lib.strings.optionalString (scriptArgs.mode == "trace") ''--input "${scriptArgs.input}"'' } \
-        ${lib.strings.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py" || script == "gen_bart.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
+        ${lib.optionalString (scriptArgs.mode == "trace") ''--input "${scriptArgs.input}"'' } \
+        ${lib.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py" || script == "gen_bart.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
         --output "${scriptArgs.output}" \
+    '' + lib.optionalString (builtins.hasAttr "tokenizer-output" scriptArgs) ''
         --tokenizer-output "${scriptArgs.tokenizer-output}"
     '';
     installPhase = ''
       mkdir -p $out
       cp ${scriptArgs.output} $out
+    '' + lib.optionalString (builtins.hasAttr "tokenizer-output" scriptArgs) ''
       cp ${scriptArgs.tokenizer-output} $out
     '';
     meta = with lib; {
@@ -108,7 +119,6 @@ in
         mode = "state-dict";
         model = "google/byt5-small";
         output = "byt5-small-state-dict.pt";
-        tokenizer-output = "byt5-small-tokenizer.json";
       };
     };
     t5-base-state-dict = mkDerivation {

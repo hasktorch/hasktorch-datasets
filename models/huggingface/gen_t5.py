@@ -10,12 +10,13 @@ def main(args=None) -> None:
     parser.add_argument("--input")
     parser.add_argument("--decoder-input")
     parser.add_argument("--output", required=True)
-    parser.add_argument("--tokenizer-output", required=True)
+    parser.add_argument("--tokenizer-output")
     args = parser.parse_args()
 
     tokenizer = AutoTokenizer.from_pretrained(args.model)
-    with open(args.tokenizer_output, 'w') as fp:
-        fp.write(tokenizer.backend_tokenizer.to_str(pretty=False))
+    if args.tokenizer_output:
+        with open(args.tokenizer_output, 'w') as fp:
+            fp.write(tokenizer.backend_tokenizer.to_str(pretty=False))
     
     if args.mode == "trace":
         model = T5ForConditionalGeneration.from_pretrained(args.model, torchscript=True)
