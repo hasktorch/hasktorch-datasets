@@ -1,6 +1,6 @@
 import argparse
 import torch
-from transformers import AutoTokenizer, T5ForConditionalGeneration
+from transformers import AutoTokenizer, BartForConditionalGeneration
 
 
 def main(args=None) -> None:
@@ -10,16 +10,15 @@ def main(args=None) -> None:
     parser.add_argument("--input")
     parser.add_argument("--decoder-input")
     parser.add_argument("--output", required=True)
-    parser.add_argument("--tokenizer-output")
+    parser.add_argument("--tokenizer-output", required=True)
     args = parser.parse_args()
 
     tokenizer = AutoTokenizer.from_pretrained(args.model)
-    if args.tokenizer_output:
-        with open(args.tokenizer_output, 'w') as fp:
-            fp.write(tokenizer.backend_tokenizer.to_str(pretty=False))
-    
+    with open(args.tokenizer_output, 'w') as fp:
+        fp.write(tokenizer.backend_tokenizer.to_str(pretty=False))
+
     if args.mode == "trace":
-        model = T5ForConditionalGeneration.from_pretrained(args.model, torchscript=True)
+        model = BartForConditionalGeneration.from_pretrained(args.model, torchscript=True)
         model.eval()
         inputs = tokenizer(args.input, return_tensors="pt")  # Batch size 1
         decoder_inputs = tokenizer(
@@ -36,7 +35,7 @@ def main(args=None) -> None:
         )
         traced_script_module.save(args.output)
     elif args.mode == "state-dict":
-        model = T5ForConditionalGeneration.from_pretrained(
+        model = BartForConditionalGeneration.from_pretrained(
             args.model, torchscript=False
         )
         d = dict(model.state_dict())
