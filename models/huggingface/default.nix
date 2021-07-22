@@ -87,6 +87,28 @@ in
         tokenizer-output = "bert-base-uncased-tokenizer.json";
       };
     };
+    roberta-base-state-dict = mkDerivation {
+      pname = "roberta-base-state-dict";
+      description = "RoBERTa base for masked language modelling trace";
+      script = "gen_roberta.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "roberta-base";
+        output = "roberta-base-state-dict.pt";
+        tokenizer-output = "roberta-base-tokenizer.json";
+      };
+    };
+    roberta-large-state-dict = mkDerivation {
+      pname = "roberta-large-state-dict";
+      description = "RoBERTa large for masked language modelling trace";
+      script = "gen_roberta.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "roberta-large";
+        output = "roberta-large-state-dict.pt";
+        tokenizer-output = "roberta-large-tokenizer.json";
+      };
+    };
     t5-small-trace = mkDerivation {
       pname = "t5-small-trace";
       description = "T5-Small for conditional generation trace";
