@@ -20,7 +20,6 @@ def main(args=None) -> None:
         model = BertForMaskedLM.from_pretrained(args.model, torchscript=True)
         model.eval()
         inputs = tokenizer(args.input, return_tensors="pt")  # Batch size 1
-        print(inputs)
         traced_script_module = torch.jit.trace(
             model, (inputs.input_ids, inputs.attention_mask, inputs.token_type_ids)
         )

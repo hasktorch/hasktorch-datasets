@@ -41,7 +41,7 @@ let
         --mode "${scriptArgs.mode}" \
         --model "${scriptArgs.model}" \
         ${lib.optionalString (scriptArgs.mode == "trace") ''--input "${scriptArgs.input}"'' } \
-        ${lib.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py" || script == "gen_bart.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
+        ${lib.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py" || script == "gen_bart.py" || script == "gen_pegasus.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
         --output "${scriptArgs.output}" \
     '' + lib.optionalString (builtins.hasAttr "tokenizer-output" scriptArgs) ''
         --tokenizer-output "${scriptArgs.tokenizer-output}"
@@ -275,6 +275,17 @@ in
         model = "facebook/bart-large";
         output = "bart-large-state-dict.pt";
         tokenizer-output = "bart-large-tokenizer.json";
+      };
+    };
+    pegasus-xsum-state-dict = mkDerivation {
+      pname = "pegasus-xsum-state-dict";
+      description = "Pegasus-XSUM for conditional generation state dictionary";
+      script = "gen_pegasus.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "google/pegasus-xsum";
+        output = "pegasus-xsum-state-dict.pt";
+        tokenizer-output = "pegasus-xsum-tokenizer.json";
       };
     };
   }
