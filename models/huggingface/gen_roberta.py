@@ -1,6 +1,6 @@
 import argparse
 import torch
-from transformers import AutoTokenizer, BertForMaskedLM
+from transformers import AutoTokenizer, RobertaForMaskedLM
 
 
 def main(args=None) -> None:
@@ -17,7 +17,7 @@ def main(args=None) -> None:
         fp.write(tokenizer.backend_tokenizer.to_str(pretty=False))
 
     if args.mode == "trace":
-        model = BertForMaskedLM.from_pretrained(args.model, torchscript=True)
+        model = RobertaForMaskedLM.from_pretrained(args.model, torchscript=True)
         model.eval()
         inputs = tokenizer(args.input, return_tensors="pt")  # Batch size 1
         traced_script_module = torch.jit.trace(
@@ -25,7 +25,7 @@ def main(args=None) -> None:
         )
         traced_script_module.save(args.output)
     elif args.mode == "state-dict":
-        model = BertForMaskedLM.from_pretrained(args.model, torchscript=False)
+        model = RobertaForMaskedLM.from_pretrained(args.model, torchscript=False)
         d = dict(model.state_dict())
         torch.save(d, args.output, _use_new_zipfile_serialization=True)
     else:

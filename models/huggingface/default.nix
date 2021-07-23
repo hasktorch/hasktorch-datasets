@@ -41,7 +41,7 @@ let
         --mode "${scriptArgs.mode}" \
         --model "${scriptArgs.model}" \
         ${lib.optionalString (scriptArgs.mode == "trace") ''--input "${scriptArgs.input}"'' } \
-        ${lib.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py" || script == "gen_bart.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
+        ${lib.optionalString ((script == "gen_t5.py" || script == "gen_speech2text.py" || script == "gen_bart.py" || script == "gen_pegasus.py") && scriptArgs.mode == "trace") ''--decoder-input "${scriptArgs.decoder-input}"'' } \
         --output "${scriptArgs.output}" \
     '' + lib.optionalString (builtins.hasAttr "tokenizer-output" scriptArgs) ''
         --tokenizer-output "${scriptArgs.tokenizer-output}"
@@ -85,6 +85,28 @@ in
         model = "bert-base-uncased";
         output = "bert-base-uncased-state-dict.pt";
         tokenizer-output = "bert-base-uncased-tokenizer.json";
+      };
+    };
+    roberta-base-state-dict = mkDerivation {
+      pname = "roberta-base-state-dict";
+      description = "RoBERTa base for masked language modelling trace";
+      script = "gen_roberta.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "roberta-base";
+        output = "roberta-base-state-dict.pt";
+        tokenizer-output = "roberta-base-tokenizer.json";
+      };
+    };
+    roberta-large-state-dict = mkDerivation {
+      pname = "roberta-large-state-dict";
+      description = "RoBERTa large for masked language modelling trace";
+      script = "gen_roberta.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "roberta-large";
+        output = "roberta-large-state-dict.pt";
+        tokenizer-output = "roberta-large-tokenizer.json";
       };
     };
     t5-small-trace = mkDerivation {
@@ -253,6 +275,17 @@ in
         model = "facebook/bart-large";
         output = "bart-large-state-dict.pt";
         tokenizer-output = "bart-large-tokenizer.json";
+      };
+    };
+    pegasus-xsum-state-dict = mkDerivation {
+      pname = "pegasus-xsum-state-dict";
+      description = "Pegasus-XSUM for conditional generation state dictionary";
+      script = "gen_pegasus.py";
+      scriptArgs = {
+        mode = "state-dict";
+        model = "google/pegasus-xsum";
+        output = "pegasus-xsum-state-dict.pt";
+        tokenizer-output = "pegasus-xsum-tokenizer.json";
       };
     };
   }
