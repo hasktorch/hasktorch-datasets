@@ -11,26 +11,22 @@ in
     srcs = builtins.map fetchurl (builtins.attrValues binaries);
     nativeBuildInputs  = [pkgs.unzip];
     unpackCmd = ''
+      mkdir -p $out
       case "$curSrc" in
       *\.zip)
-        unzip -q "$curSrc"
+        unzip -q "$curSrc" -d $out/
         ;;
       *\.tgz)
-        tar xfz "$curSrc"
+        tar xfz "$curSrc" -C $out/
         ;;
       *)
-        cp "$curSrc" "$'' + ''{curSrc#*-}"
+        cp "$curSrc" $out/"$'' + ''{curSrc#*-}"
         ;;
       esac
       sourceRoot=`pwd`
     '';    
-    installPhase = ''
-      mkdir -p $out
-      for i in * ; do
-          cp -r $i $out/
-      done
-    '';
     dontFixup = true;
+    dontInstall = true;
     meta = with lib; {
       description = "COCO-2014 datasets of Yolo format";
       longDescription = ''
