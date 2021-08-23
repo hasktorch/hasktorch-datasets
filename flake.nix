@@ -32,6 +32,8 @@
         packages = {
           datasets-mnist = import datasets/mnist.nix {pkgs = pkgs-locked;};
           datasets-coco2014 = import datasets/coco/default.nix {pkgs = pkgs-locked;};
+          datasets-bdd100k = import datasets/bdd100k/default.nix {pkgs = pkgs-locked;};
+          datasets-bdd100k-subset = import datasets/bdd100k-subset/default.nix {pkgs = pkgs-locked;};
         }
         // (toPackages {drvs = huggingface; prefix = "models-huggingface";})
         // (toPackages {drvs = torchvision; prefix = "models-torchvision";})
