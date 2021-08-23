@@ -9,6 +9,7 @@ in
 {
   datasets = {
     mnist = import ./datasets/mnist.nix {};
+    coco2014 = import ./datasets/coco/default.nix {};
   };
 
   models = {
