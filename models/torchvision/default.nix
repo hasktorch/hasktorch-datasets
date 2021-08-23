@@ -36,7 +36,6 @@ let
       };
     };
 in {
-  genTorchScript = genTorchScript;
   alexnet = (genTorchScript "alexnet");
   resnet18 = (genTorchScript "resnet18");
 }
