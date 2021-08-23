@@ -16,8 +16,8 @@ $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.t
 $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A datasets.coco2014 -o da
 
 # With flakes
-$ nix build hasktorch/hasktorch-datasets#datasets-mnist -o data
-$ nix build hasktorch/hasktorch-datasets#datasets-coco2014 -o data
+$ nix build github:hasktorch/hasktorch-datasets#datasets-mnist -o data
+$ nix build github:hasktorch/hasktorch-datasets#datasets-coco2014 -o data
 ```
 
 # Setup Models
@@ -25,6 +25,8 @@ $ nix build hasktorch/hasktorch-datasets#datasets-coco2014 -o data
 Build torchscript models as follows.
 
 ```shell
+# Without flakes
+
 # Resnet18
 $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A models.torchvision.resnet18 -o resnet18 --option sandbox false
 
@@ -33,6 +35,17 @@ $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.t
 
 # Speech2Text
 $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/e035e056b3a0827bdf1d7192afee85c88b340b74.tar.gz -A models.huggingface.speech2text-small-librispeech-asr-trace -o speech2txt --option sandbox false
+
+# With flakes
+
+# Resnet18
+$ nix build github:hasktorch/hasktorch-datasets#models-torchvision-resnet18 -o resnet18
+
+# Yolov5s
+$ nix build github:hasktorch/hasktorch-datasets#models-yolov5 -o yolov5
+
+# Speech2Text
+$ nix build github:hasktorch/hasktorch-datasets#models-huggingface-speech2text-small-librispeech-asr-trace -o speech2txt
 ```
 
 # Processing of datasets
@@ -50,4 +63,3 @@ import ./utils/mix.nix {
 EOF
 $ nix-build --arg rate 0.5 -o mixed-datasets ./datasets-1to1.nix
 ```
-
