@@ -10,7 +10,14 @@ In addition, we aim to build workflows and pipelines to integrate machine learni
 The mnist data can be set up as follows.
 
 ```shell
+# Without flakes
+
 $ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A datasets.mnist -o data
+$ nix-build https://github.com/hasktorch/hasktorch-datasets/archive/<git-hash>.tar.gz -A datasets.coco2014 -o da
+
+# With flakes
+$ nix build hasktorch/hasktorch-datasets#datasets-mnist -o data
+$ nix build hasktorch/hasktorch-datasets#datasets-coco2014 -o data
 ```
 
 # Setup Models
