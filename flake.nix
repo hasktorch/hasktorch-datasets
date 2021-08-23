@@ -1,5 +1,11 @@
 {
   description = "Datasets";
+  
+  nixConfig = {
+    # This is for getting pretrained models.
+    useSandbox = false;
+  };
+  
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
     nixpkgs-locked.url = "github:nixos/nixpkgs?rev=12e7af1cfb3ab5bbbbd1d213a0b17c11ce9d3f2f";
