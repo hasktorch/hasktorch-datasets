@@ -1,0 +1,33 @@
+name: nix-linux
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: free disk space
+      run: |
+        sudo swapoff -a
+        sudo rm -f /swapfile /mnt/swapfile
+        sudo apt -y purge ghc* cabal-install* php* dotnet-* llvm-* || true
+        sudo apt -y purge azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel || true
+        sudo apt autoremove -y || true
+        sudo apt autoclean -y || true
+        sudo rm -rf /usr/local/lib/android /usr/share/swift
+        docker rmi $(docker image ls -aq)
+        df -h
+    - uses: actions/checkout@v1
+    - uses: cachix/install-nix-action@v13
+      with:
+        install_url: https://nixos-nix-install-tests.cachix.org/serve/i6laym9jw3wg9mw6ncyrk6gjx4l34vvx/install
+        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+        nix_path: nixpkgs=channel:nixos-unstable
+    - name: Build
+      run: |
+        mkdir -p ~/.config/nixpkgs
+        echo  '{ allowUnfree = true; }' >  ~/.config/nixpkgs/config.nix
+        nix flake show
+#        nix build
