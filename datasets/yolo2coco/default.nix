@@ -1,6 +1,6 @@
 { sources ? import ../../nix/sources.nix
 , pkgs ? import sources.nixpkgs {}
-, bdd100k ? import ../bdd100k-mini/default.nix {}
+, dataset ? import ../bdd100k-mini/default.nix {}
 }:
 with pkgs;
 let
@@ -10,19 +10,19 @@ let
   );
 in
   stdenvNoCC.mkDerivation rec {
-    pname = bdd100k.pname + "-coco-annotation";
+    pname = dataset.pname + "-coco-annotation";
     version = "1.0";
     src = ./.;
     nativeBuildInputs  = [pkgs.unzip myPython];
-    buildInputs  = [bdd100k];
+    buildInputs  = [dataset];
     installPhase = ''
       mkdir -p $out
-      pushd ${bdd100k.out}
+      pushd ${dataset.out}
       for i in * ; do
-        ln -s ${bdd100k.out}/$i $out/$i
+        ln -s ${dataset.out}/$i $out/$i
       done
       popd
-      python yolo2coco.py ${bdd100k.out} $out
+      python yolo2coco.py ${dataset.out} $out
     '';    
     dontFixup = true;
     meta = with lib; {
