@@ -19,7 +19,7 @@
           huggingface = import ./models/huggingface/default.nix {inherit pkgs;};
           torchvision = import ./models/torchvision/default.nix {inherit pkgs;};
           yolov5 = import ./models/yolov5/default.nix {inherit pkgs;};
-          datasets = {
+          datasets = rec{
             mnist = import datasets/mnist.nix {pkgs = pkgs-locked;};
             coco2014 = import datasets/coco/default.nix {pkgs = pkgs-locked;};
             bdd100k = import datasets/bdd100k/default.nix {pkgs = pkgs-locked;};
