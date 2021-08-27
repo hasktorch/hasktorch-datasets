@@ -25,6 +25,7 @@
             bdd100k = import datasets/bdd100k/default.nix {pkgs = pkgs-locked;};
             bdd100k-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k; };
             bdd100k-mini = import datasets/bdd100k-mini/default.nix {pkgs = pkgs-locked;};
+            bdd100k-mini-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k-mini; };
           };
           
           toPackages = {drvs, prefix}:
