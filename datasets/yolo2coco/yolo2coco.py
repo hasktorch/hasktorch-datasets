@@ -9,7 +9,8 @@ import json
 
 bdd100k_out = sys.argv[1]
 out = sys.argv[2]
-#filter = sys.argv[3]
+classes = sys.argv[3]
+#filter = sys.argv[4]
 
 image_id = 0
 annotation_id = 0
@@ -20,6 +21,15 @@ for m in ["trains", "valids"]:
     d={}
     d["images"]=[]
     d["annotations"]=[]
+    d["categories"]=[]
+
+    with open(classes) as f:
+        for i, n in enumerate(f.read().splitlines()):
+            d["categories"].append({
+                "id": i,
+                "name": n,
+                "supercategory": n
+            })
     
     for file_name in file_names:
         width, height = imagesize.get(file_name)
@@ -56,5 +66,5 @@ for m in ["trains", "valids"]:
                 })
                 annotation_id = annotation_id + 1
         image_id = image_id + 1
-    with open(out + '/' + m + '.json', 'w') as ff:
+    with open(out + '/annotations/' + m + '.json', 'w') as ff:
         json.dump(d, ff, indent=4)
