@@ -22,7 +22,10 @@ in
         ln -s ${dataset.out}/$i $out/$i
       done
       popd
-      python yolo2coco.py ${dataset.out} $out
+      if [ ! -d  $out/annotations ] ; then
+        mkdir -p $out/annotations
+      fi
+      python yolo2coco.py ${dataset.out} $out ${dataset.out}/*.names
     '';    
     dontFixup = true;
     meta = with lib; {
