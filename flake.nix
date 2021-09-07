@@ -26,15 +26,32 @@
             bdd100k-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k; };
             bdd100k-mini = import datasets/bdd100k-mini/default.nix {pkgs = pkgs-locked;};
             bdd100k-mini-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k-mini; };
+            bdd100k-subset = import datasets/bdd100k-subset/subsets.nix {pkgs = pkgs-locked;};
           };
           
           toPackages = {drvs, prefix}:
-            let names = builtins.attrNames drvs;
-                models = builtins.map (n: {
-                  name = prefix + "-" + n;
-                  value = drvs."${n}";
-                }) names;
-            in builtins.listToAttrs models;
+            let models = {drvs, prefix}:
+                  with builtins;
+                  let names = attrNames drvs;
+                      n = head names;
+                  in
+                    concatLists (
+                      map (n:
+                        if typeOf (drvs."${n}") == "set" && hasAttr "drvPath" drvs."${n}"
+                        then
+                          [{
+                            name = prefix + "-" + n;
+                            value = drvs."${n}";
+                          }] 
+                        else
+                          models {
+                            drvs=drvs."${n}";
+                            prefix=prefix + "-" + n;
+                          }
+                      ) names
+                    );
+                m = models {inherit drvs; inherit prefix;};
+            in builtins.listToAttrs m;
       in {
         packages = (toPackages {drvs = datasets; prefix = "datasets";})
         // (toPackages {drvs = huggingface; prefix = "models-huggingface";})
