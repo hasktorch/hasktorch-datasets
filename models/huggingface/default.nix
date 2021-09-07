@@ -288,4 +288,8 @@ in
         tokenizer-output = "pegasus-xsum-tokenizer.json";
       };
     };
+    inferences = import ./inferences.nix {
+      inherit pkgs;
+      inherit poetry2nix;
+    };
   }
