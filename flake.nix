@@ -35,6 +35,7 @@
                 name = "test-" + n;
                 value = yolov5-bdd100k-test {
                   dataset = datasets.bdd100k-subset."${n}";
+                  useDefaultWeights = true;
                 };
               }
             ) (builtins.attrNames datasets.bdd100k-subset)

@@ -249,6 +249,7 @@ EOF
          , batch ? "32"
          , device ? "0"
          , num-workers ? "0"
+         , useDefaultWeights ? false
          }:
     pkgs.stdenv.mkDerivation rec {
     pname = "test";
@@ -258,9 +259,14 @@ EOF
       pkgs.curl
     ];
     buildInputs =  [];
-    src = yolov5s_bdd100k;
-   # src = ./yolov5s_bdd100k;
-    buildPhase = ''
+    srcs = [
+      yolov5s_bdd100k
+      ./src
+    ];
+    buildPhase =
+      let removeDefaultWeights = if useDefaultWeights then "" else "rm -rf runs/exp*";
+      in
+      ''
       ls -l /run/opengl-driver/lib
       #ls -l /dev | grep nvidia
       export PIP_PREFIX=$(pwd)/_build/pip_packages
@@ -286,7 +292,7 @@ test: `echo $DATASET | sed -e 's/trains/tests/g' -e 's/train/test/g'`
 nc: 13
 names: ['person','rider','car','bus','truck','bike','motor','tl_green','tl_red','tl_yellow','tl_none','t_sign','train']
 EOF
-      rm -rf runs/exp*
+      ${removeDefaultWeights}
       cat dataset.test.yaml
       cmdWrapper python test.py --img 640 --batch ${batch} \
              --data dataset.test.yaml \
