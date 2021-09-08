@@ -28,10 +28,11 @@ for file_name in file_names:
     objects = ijson.items(f, 'item')
     for part in objects:
         filename=part['name']
+        labelfile=filename.replace('jpg','txt').replace('png','txt')
         weather=part['attributes']['weather']
         scene=part['attributes']['scene']
         timeofday=part['attributes']['timeofday']
 #        if eval(filter):
         if __filter__:
           os.symlink(bdd100k_out+"/images/"+dir+"/"+filename,out+"/images/"+dir+"/"+filename)
-          os.symlink(bdd100k_out+"/labels/"+dir+"/"+filename,out+"/labels/"+dir+"/"+filename)
+          os.symlink(bdd100k_out+"/labels/"+dir+"/"+labelfile,out+"/labels/"+dir+"/"+labelfile)

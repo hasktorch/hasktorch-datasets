@@ -259,10 +259,8 @@ EOF
       pkgs.curl
     ];
     buildInputs =  [];
-    srcs = [
-      yolov5s_bdd100k
-      ./src
-    ];
+    src = yolov5s_bdd100k;
+    patches = [./patches/bdd100k.patch];
     buildPhase =
       let removeDefaultWeights = if useDefaultWeights then "" else "rm -rf runs/exp*";
       in
