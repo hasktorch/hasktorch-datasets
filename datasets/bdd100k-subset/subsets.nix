@@ -34,12 +34,13 @@ let
       "night"
     ];
   };
+  replace = str: builtins.replaceStrings [" " "/"] ["-" "-"] str;
   conditions_map =
     builtins.concatLists (
       builtins.map (n:
         map (m:
           rec {
-            name = "${n}-${m}";
+            name = "${replace n}-${replace m}";
             value = func name " ${n} == '${m}' " ;
           }
         ) conditions."${n}"
