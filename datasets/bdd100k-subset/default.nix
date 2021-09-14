@@ -14,7 +14,10 @@ in
   stdenvNoCC.mkDerivation rec {
     pname = "bdd100k-" + name;
     version = "1.0";
-    src = ./.;
+    src =
+      builtins.filterSource
+        (path: type: ! (builtins.isList (builtins.match ".*\.nix$" (baseNameOf path))))
+        ./.;
     nativeBuildInputs  = [pkgs.unzip myPython];
     buildInputs  = [bdd100k];
     installPhase = ''

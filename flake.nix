@@ -49,6 +49,12 @@
             bdd100k-mini-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k-mini; };
             bdd100k-subset = import datasets/bdd100k-subset/subsets.nix {pkgs = pkgs-locked;};
           };
+          analysis = rec {
+            bdd100k-subset = import analysis/calc-map.nix {
+              pkgs = pkgs-locked;
+              datasets = toPackages {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";};
+            };
+          };
           
           toPackages = {drvs, prefix}:
             let models = {drvs, prefix}:
@@ -78,7 +84,8 @@
         // (toPackages {drvs = huggingface; prefix = "models-huggingface";})
         // (toPackages {drvs = torchvision; prefix = "models-torchvision";})
 #        // (toPackages {drvs = {yolov5 = yolov5;}; prefix = "models-yolov5";})
-        // (toPackages {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";});
+        // (toPackages {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";})
+        // (toPackages {drvs = analysis; prefix = "analysis";});
       }
     );
 }
