@@ -52,7 +52,16 @@
           analysis = rec {
             bdd100k-subset = import analysis/calc-map.nix {
               pkgs = pkgs-locked;
-              datasets = toPackages {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";};
+              datasets =
+                (toPackages {
+                  drvs = yolov5-bdd100k-tests;
+                  prefix = "test-yolov5-bdd100k";
+                }) // {
+                  yolov5-bdd100k-all = yolov5-bdd100k-test {
+                    dataset = datasets.bdd100k;
+                    useDefaultWeights = true;
+                  };
+                }; 
             };
           };
           
