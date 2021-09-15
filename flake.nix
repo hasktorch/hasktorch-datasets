@@ -23,7 +23,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system};
           pkgs-locked = nixpkgs-locked.legacyPackages.${system};
-
+          cml = import ./utils/cml/default.nix {inherit pkgs;};
           huggingface = import ./models/huggingface/default.nix {inherit pkgs;};
           torchvision = import ./models/torchvision/default.nix {inherit pkgs;};
           yolov5 = import ./models/yolov5/default.nix {inherit pkgs;};
@@ -85,7 +85,8 @@
         // (toPackages {drvs = torchvision; prefix = "models-torchvision";})
 #        // (toPackages {drvs = {yolov5 = yolov5;}; prefix = "models-yolov5";})
         // (toPackages {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";})
-        // (toPackages {drvs = analysis; prefix = "analysis";});
+        // (toPackages {drvs = analysis; prefix = "analysis";})
+        // {inherit cml;};
       }
     );
 }
