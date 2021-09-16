@@ -52,6 +52,7 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-locked": "nixpkgs-locked",
         "torchvision-pkgs": "torchvision-pkgs",
+        "yolov5": "yolov5",
         "yolov5s_bdd100k": "yolov5s_bdd100k"
       }
     },
@@ -68,6 +69,23 @@
         "owner": "junjihashimoto",
         "repo": "nixpkgs",
         "rev": "71cda4fbef0c064b4df82ac65dd2cc868bb37c32",
+        "type": "github"
+      }
+    },
+    "yolov5": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1623271827,
+        "narHash": "sha256-OCvgQ1J4JCtKac5flMnDkPSRQ2DcTAxRRiUwC1xXvjQ=",
+        "owner": "ultralytics",
+        "repo": "yolov5",
+        "rev": "4695ca8314269c9a9f4b8cf89c7962205f27fdad",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ultralytics",
+        "repo": "yolov5",
+        "rev": "4695ca8314269c9a9f4b8cf89c7962205f27fdad",
         "type": "github"
       }
     },

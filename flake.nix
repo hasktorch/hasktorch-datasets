@@ -18,8 +18,12 @@
       url = "github:williamhyin/yolov5s_bdd100k";
       flake = false;
     };
+    yolov5 = {
+      url = "github:ultralytics/yolov5?rev=4695ca8314269c9a9f4b8cf89c7962205f27fdad";
+      flake = false;
+    };
   };
-  outputs = { self, nixpkgs, nixpkgs-locked, flake-utils, yolov5s_bdd100k, torchvision-pkgs}:
+  outputs = { self, nixpkgs, nixpkgs-locked, flake-utils, yolov5s_bdd100k, torchvision-pkgs, yolov5}:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system};
           pkgs-locked = nixpkgs-locked.legacyPackages.${system};
