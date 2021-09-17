@@ -111,6 +111,15 @@
           };
           utils = {
             flattenDerivations = toPackages;
+            excludeFiles = exclude_lists: src:
+              builtins.filterSource
+                (path: type: ! (builtins.any
+                  (pattern:
+                    builtins.isList (builtins.match pattern (baseNameOf path))
+                  )
+                  ([".*\.nix$"] ++ exclude_lists)
+                ))
+                src;
           };
         };
 
