@@ -1,10 +1,8 @@
 { pkgs
 , yolov5s_bdd100k
-, torchvision-pkgs
 }:
 let
   lib = pkgs.lib;
-  my-torchvision = pkgs.python3.pkgs.callPackage "${torchvision-pkgs}/pkgs/development/python-modules/torchvision/bin.nix" {};
   myPython = pkgs.python3.withPackages (ps: with ps;
     [ cython
       matplotlib
@@ -12,7 +10,7 @@ let
       opencv4
       pillow
       pytorch-bin
-      my-torchvision
+      torchvision-bin
       pyyaml
       scipy
       tensorflow-tensorboard
