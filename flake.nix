@@ -93,6 +93,24 @@
                 m = models {inherit drvs; inherit prefix;};
             in builtins.listToAttrs m;
       in {
+        # Exported functions.
+        # ToDo: Generate documents for each function.
+        lib = {
+          datasets = {
+            yolo2coco = args@{...}: import datasets/yolo2coco/default.nix ({pkgs = pkgs-locked;} // args);
+            bdd100k-filter = args@{...}: import datasets/bdd100k-subset/default.nix ({pkgs = pkgs-locked;} // args);
+            bdd100k-subsets = args@{...}: {bdd100k = datasets.bdd100k;} // datasets.bdd100k-subset // args;
+          };
+          models = {
+            yolov5-bdd100k = {
+              test = args@{...}: yolov5-bdd100k.test ({
+                useDefaultWeights = true;
+              } // args);
+            };
+          };
+        };
+
+        # Exported packages.
         packages = (toPackages {drvs = datasets; prefix = "datasets";})
         // (toPackages {drvs = huggingface; prefix = "models-huggingface";})
         // (toPackages {drvs = torchvision; prefix = "models-torchvision";})
