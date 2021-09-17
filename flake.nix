@@ -98,6 +98,7 @@
         lib = {
           datasets = {
             yolo2coco = args@{...}: import datasets/yolo2coco/default.nix ({pkgs = pkgs-locked;} // args);
+            mix = args@{...}: import utils/mix.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-filter = args@{...}: import datasets/bdd100k-subset/default.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-subsets = args@{...}: {bdd100k = datasets.bdd100k;} // datasets.bdd100k-subset // args;
           };
@@ -108,13 +109,16 @@
               } // args);
             };
           };
+          utils = {
+            flattenDerivations = toPackages;
+          };
         };
 
         # Exported packages.
         packages = (toPackages {drvs = datasets; prefix = "datasets";})
         // (toPackages {drvs = huggingface; prefix = "models-huggingface";})
         // (toPackages {drvs = torchvision; prefix = "models-torchvision";})
-#        // (toPackages {drvs = {yolov5 = yolov5;}; prefix = "models-yolov5";})
+        // (toPackages {drvs = {yolov5 = yolov5;}; prefix = "models-yolov5";})
         // (toPackages {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";})
         // (toPackages {drvs = analysis; prefix = "analysis";})
         // {inherit cml;};
