@@ -10,10 +10,6 @@
     nixpkgs.url = "github:nixos/nixpkgs";
     nixpkgs-locked.url = "github:nixos/nixpkgs?rev=12e7af1cfb3ab5bbbbd1d213a0b17c11ce9d3f2f";
     flake-utils.url = "github:numtide/flake-utils";
-    torchvision-pkgs = {
-      url = "github:junjihashimoto/nixpkgs?rev=71cda4fbef0c064b4df82ac65dd2cc868bb37c32";
-      flake = false;
-    };
     yolov5s_bdd100k = {
       url = "github:williamhyin/yolov5s_bdd100k";
       flake = false;
@@ -23,7 +19,7 @@
       flake = false;
     };
   };
-  outputs = { self, nixpkgs, nixpkgs-locked, flake-utils, yolov5s_bdd100k, torchvision-pkgs, yolov5}:
+  outputs = { self, nixpkgs, nixpkgs-locked, flake-utils, yolov5s_bdd100k, yolov5}:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system};
           pkgs-locked = nixpkgs-locked.legacyPackages.${system};
@@ -31,7 +27,7 @@
           huggingface = import ./models/huggingface/default.nix {inherit pkgs;};
           torchvision = import ./models/torchvision/default.nix {inherit pkgs;};
           yolov5 = import ./models/yolov5/default.nix {inherit pkgs;};
-          yolov5-bdd100k = import ./models/yolov5/inferences/bdd100k.nix {inherit pkgs; inherit yolov5s_bdd100k; torchvision-pkgs = torchvision-pkgs;};
+          yolov5-bdd100k = import ./models/yolov5/inferences/bdd100k.nix {inherit pkgs; inherit yolov5s_bdd100k;};
           yolov5-bdd100k-test = yolov5-bdd100k.test;
           yolov5-bdd100k-tests = builtins.listToAttrs (
             builtins.map (n:
