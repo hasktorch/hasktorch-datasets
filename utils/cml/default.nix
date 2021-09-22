@@ -1,7 +1,7 @@
 { pkgs
 }:
 with pkgs;
-mkYarnPackage {
+((mkYarnPackage {
   name = "cml";
   src = fetchFromGitHub {
     owner = "iterative";
@@ -12,4 +12,8 @@ mkYarnPackage {
   packageJSON = ./package.json;
   yarnLock = ./yarn.lock;
   yarnNix = ./yarn.nix;
-}
+}).overrideAttrs (old: rec {
+  configurePhase = old.configurePhase + ''
+    export BUILDTYPE=debug
+  '';
+}))

@@ -18,28 +18,54 @@
       url = "github:ultralytics/yolov5?rev=4695ca8314269c9a9f4b8cf89c7962205f27fdad";
       flake = false;
     };
+    torchvision-fasterrcnn.url = "github:junjihashimoto/torchvision-fasterrcnn";
   };
-  outputs = { self, nixpkgs, nixpkgs-locked, flake-utils, yolov5s_bdd100k, yolov5}:
+  outputs = { self,
+              nixpkgs,
+              nixpkgs-locked,
+              flake-utils,
+              yolov5s_bdd100k,
+              yolov5,
+              torchvision-fasterrcnn
+            }:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system};
           pkgs-locked = nixpkgs-locked.legacyPackages.${system};
           cml = import ./utils/cml/default.nix {inherit pkgs;};
           huggingface = import ./models/huggingface/default.nix {inherit pkgs;};
+          
           torchvision = import ./models/torchvision/default.nix {inherit pkgs;};
+          fasterrcnn = torchvision-fasterrcnn.lib.${system};
+
+          yolo2coco = args@{...}: import datasets/yolo2coco/default.nix ({pkgs = pkgs-locked;} // args);
+
+          
           yolov5 = import ./models/yolov5/default.nix {inherit pkgs;};
           yolov5-bdd100k = import ./models/yolov5/inferences/bdd100k.nix {inherit pkgs; inherit yolov5s_bdd100k;};
           yolov5-bdd100k-test = yolov5-bdd100k.test;
-          yolov5-bdd100k-tests = builtins.listToAttrs (
+          mapDataset = prefix: datasets: f: builtins.listToAttrs (
             builtins.map (n:
               {
-                name = "test-" + n;
-                value = yolov5-bdd100k-test {
-                  dataset = datasets.bdd100k-subset."${n}";
-                  useDefaultWeights = true;
+                name = prefix + n;
+                value = f datasets."${n}";
+              }
+            ) (builtins.attrNames datasets)
+          );
+          yolov5-bdd100k-tests = mapDataset "test-" datasets.bdd100k-subset
+            (dataset: 
+              yolov5-bdd100k-test {
+                inherit dataset;
+                useDefaultWeights = true;
+              }
+            );
+          fasterrcnn-bdd100k-tests = mapDataset "test-" datasets.bdd100k-subset
+            (dataset: 
+              fasterrcnn.test {
+                datasets = yolo2coco {
+                  inherit dataset;
                 };
               }
-            ) (builtins.attrNames datasets.bdd100k-subset)
-          );
+            );
           datasets = rec{
             mnist = import datasets/mnist.nix {pkgs = pkgs-locked;};
             coco2014 = import datasets/coco/default.nix {pkgs = pkgs-locked;};
@@ -50,7 +76,7 @@
             bdd100k-subset = import datasets/bdd100k-subset/subsets.nix {pkgs = pkgs-locked;};
           };
           analysis = rec {
-            bdd100k-subset = import analysis/calc-map.nix {
+            bdd100k-subset-yolov5 = import analysis/calc-map.nix {
               pkgs = pkgs-locked;
               datasets =
                 (toPackages {
@@ -60,6 +86,20 @@
                   yolov5-bdd100k-all = yolov5-bdd100k-test {
                     dataset = datasets.bdd100k;
                     useDefaultWeights = true;
+                  };
+                }; 
+            };
+            bdd100k-subset-fasterrcnn = import analysis/calc-map-simple.nix {
+              pkgs = pkgs-locked;
+              datasets =
+                (toPackages {
+                  drvs = fasterrcnn-bdd100k-tests;
+                  prefix = "test-yolov5-bdd100k";
+                }) // {
+                  fasterrcnn-bdd100k-all =  fasterrcnn.test {
+                    datasets = yolo2coco {
+                      dataset = datasets.bdd100k;
+                    };
                   };
                 }; 
             };
@@ -93,7 +133,7 @@
         # ToDo: Generate documents for each function.
         lib = {
           datasets = {
-            yolo2coco = args@{...}: import datasets/yolo2coco/default.nix ({pkgs = pkgs-locked;} // args);
+            inherit yolo2coco;
             mix = args@{...}: import utils/mix.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-filter = args@{...}: import datasets/bdd100k-subset/default.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-subsets = args@{...}: {bdd100k = datasets.bdd100k;} // datasets.bdd100k-subset // args;
