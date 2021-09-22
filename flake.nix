@@ -66,12 +66,13 @@
                 };
               }
             );
+          src2drv = import datasets/bdd100k-mini/default.nix {pkgs = pkgs-locked;};
           datasets = rec{
             mnist = import datasets/mnist.nix {pkgs = pkgs-locked;};
             coco2014 = import datasets/coco/default.nix {pkgs = pkgs-locked;};
             bdd100k = import datasets/bdd100k/default.nix {pkgs = pkgs-locked;};
             bdd100k-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k; };
-            bdd100k-mini = import datasets/bdd100k-mini/default.nix {pkgs = pkgs-locked;};
+            bdd100k-mini = src2drv {};
             bdd100k-mini-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k-mini; };
             bdd100k-subset = import datasets/bdd100k-subset/subsets.nix {pkgs = pkgs-locked;};
           };
@@ -133,6 +134,7 @@
         # ToDo: Generate documents for each function.
         lib = {
           datasets = {
+            inherit src2drv;
             inherit yolo2coco;
             mix = args@{...}: import utils/mix.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-filter = args@{...}: import datasets/bdd100k-subset/default.nix ({pkgs = pkgs-locked;} // args);
