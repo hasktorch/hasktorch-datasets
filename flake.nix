@@ -75,6 +75,14 @@
             bdd100k-mini = src2drv {};
             bdd100k-mini-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k-mini; };
             bdd100k-subset = import datasets/bdd100k-subset/subsets.nix {pkgs = pkgs-locked;};
+            sample-images = src2drv {
+              srcs = builtins.map builtins.fetchurl (builtins.attrValues {
+                data1 = {
+                  url = "https://github.com/hasktorch/hasktorch-datasets/releases/download/sample/sample-images.zip";
+                  sha256 = "1n065xabx4rv85b2nyvpj510yr3fvri1h828y77a1vr5g6mhrv7q";
+                };
+              });
+            };
           };
           analysis = rec {
             bdd100k-subset-yolov5 = import analysis/calc-map.nix {
