@@ -29,7 +29,8 @@
               torchvision-fasterrcnn
             }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system};
+      let nixflow = import ./nix/nixflow.nix {pkgs=pkgs-locked;};
+          pkgs = nixpkgs.legacyPackages.${system};
           pkgs-locked = nixpkgs-locked.legacyPackages.${system};
           cml = import ./utils/cml/default.nix {inherit pkgs;};
           huggingface = import ./models/huggingface/default.nix {inherit pkgs;};
@@ -43,22 +44,14 @@
           yolov5 = import ./models/yolov5/default.nix {inherit pkgs;};
           yolov5-bdd100k = import ./models/yolov5/inferences/bdd100k.nix {inherit pkgs; inherit yolov5s_bdd100k;};
           yolov5-bdd100k-test = yolov5-bdd100k.test;
-          mapDataset = prefix: datasets: f: builtins.listToAttrs (
-            builtins.map (n:
-              {
-                name = prefix + n;
-                value = f datasets."${n}";
-              }
-            ) (builtins.attrNames datasets)
-          );
-          yolov5-bdd100k-tests = mapDataset "test-" datasets.bdd100k-subset
+          yolov5-bdd100k-tests = nixflow.mapDatasets "test-" datasets.bdd100k-subset
             (dataset: 
               yolov5-bdd100k-test {
                 inherit dataset;
                 useDefaultWeights = true;
               }
             );
-          fasterrcnn-bdd100k-tests = mapDataset "test-" datasets.bdd100k-subset
+          fasterrcnn-bdd100k-tests = nixflow.mapDatasets "test-" datasets.bdd100k-subset
             (dataset: 
               fasterrcnn.test {
                 datasets = yolo2coco {
@@ -88,7 +81,7 @@
             bdd100k-subset-yolov5 = import analysis/calc-map.nix {
               pkgs = pkgs-locked;
               datasets =
-                (toPackages {
+                (nixflow.flattenDerivations {
                   drvs = yolov5-bdd100k-tests;
                   prefix = "test-yolov5-bdd100k";
                 }) // {
@@ -101,7 +94,7 @@
             bdd100k-subset-fasterrcnn = import analysis/calc-map-simple.nix {
               pkgs = pkgs-locked;
               datasets =
-                (toPackages {
+                (nixflow.flattenDerivations {
                   drvs = fasterrcnn-bdd100k-tests;
                   prefix = "test-yolov5-bdd100k";
                 }) // {
@@ -114,35 +107,11 @@
             };
           };
           
-          toPackages = {drvs, prefix}:
-            let models = {drvs, prefix}:
-                  with builtins;
-                  let names = attrNames drvs;
-                      n = head names;
-                  in
-                    concatLists (
-                      map (n:
-                        if typeOf (drvs."${n}") == "set" && hasAttr "drvPath" drvs."${n}"
-                        then
-                          [{
-                            name = prefix + "-" + n;
-                            value = drvs."${n}";
-                          }] 
-                        else
-                          models {
-                            drvs=drvs."${n}";
-                            prefix=prefix + "-" + n;
-                          }
-                      ) names
-                    );
-                m = models {inherit drvs; inherit prefix;};
-            in builtins.listToAttrs m;
       in {
         # Exported functions.
         # ToDo: Generate documents for each function.
         lib = {
           datasets = {
-            inherit src2drv;
             inherit yolo2coco;
             mix = args@{...}: import utils/mix.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-filter = args@{...}: import datasets/bdd100k-subset/default.nix ({pkgs = pkgs-locked;} // args);
@@ -155,28 +124,19 @@
               } // args);
             };
           };
-          utils = {
-            flattenDerivations = toPackages;
-            excludeFiles = exclude_lists: src:
-              builtins.filterSource
-                (path: type: ! (builtins.any
-                  (pattern:
-                    builtins.isList (builtins.match pattern (baseNameOf path))
-                  )
-                  ([".*\.nix$"] ++ exclude_lists)
-                ))
-                src;
-          };
+          utils = nixflow;
         };
 
         # Exported packages.
-        packages = (toPackages {drvs = datasets; prefix = "datasets";})
-        // (toPackages {drvs = huggingface; prefix = "models-huggingface";})
-        // (toPackages {drvs = torchvision; prefix = "models-torchvision";})
-        // (toPackages {drvs = {yolov5 = yolov5;}; prefix = "models-yolov5";})
-        // (toPackages {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";})
-        // (toPackages {drvs = analysis; prefix = "analysis";})
-        // {inherit cml;};
+        packages =
+          with nixflow;
+          (flattenDerivations {drvs = datasets; prefix = "datasets";})
+          // (flattenDerivations {drvs = huggingface; prefix = "models-huggingface";})
+          // (flattenDerivations {drvs = torchvision; prefix = "models-torchvision";})
+          // (flattenDerivations {drvs = {yolov5 = yolov5;}; prefix = "models-yolov5";})
+          // (flattenDerivations {drvs = yolov5-bdd100k-tests; prefix = "test-yolov5-bdd100k";})
+          // (flattenDerivations {drvs = analysis; prefix = "analysis";})
+          // {inherit cml;};
       }
     );
 }
