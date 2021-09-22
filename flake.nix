@@ -39,6 +39,7 @@
           fasterrcnn = torchvision-fasterrcnn.lib.${system};
 
           yolo2coco = args@{...}: import datasets/yolo2coco/default.nix ({pkgs = pkgs-locked;} // args);
+          img2coco = args@{...}: import datasets/img2coco/default.nix ({pkgs = pkgs-locked;inherit nixflow;} // args);
 
           
           yolov5 = import ./models/yolov5/default.nix {inherit pkgs;};
@@ -113,6 +114,7 @@
         lib = {
           datasets = {
             inherit yolo2coco;
+            inherit img2coco;
             mix = args@{...}: import utils/mix.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-filter = args@{...}: import datasets/bdd100k-subset/default.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-subsets = args@{...}: {bdd100k = datasets.bdd100k;} // datasets.bdd100k-subset // args;
