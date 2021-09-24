@@ -37,9 +37,17 @@
           
           torchvision = import ./models/torchvision/default.nix {inherit pkgs;};
           fasterrcnn = torchvision-fasterrcnn.lib.${system};
+          
+          src2drv = import datasets/bdd100k-mini/default.nix {pkgs = pkgs-locked;};
 
+          bdd100k-mini = src2drv {};
+          bdd100k-mini-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k-mini; };
           yolo2coco = args@{...}: import datasets/yolo2coco/default.nix ({pkgs = pkgs-locked;} // args);
-          img2coco = args@{...}: import datasets/img2coco/default.nix ({pkgs = pkgs-locked;inherit nixflow;} // args);
+          img2coco = args@{...}: import datasets/img2coco/default.nix ({
+            pkgs = pkgs-locked;
+            inherit nixflow;
+            datasetForLabels = bdd100k-mini-coco;
+          } // args);
 
           
           yolov5 = import ./models/yolov5/default.nix {inherit pkgs;};
@@ -60,7 +68,6 @@
                 };
               }
             );
-          src2drv = import datasets/bdd100k-mini/default.nix {pkgs = pkgs-locked;};
           datasets = rec{
             mnist = import datasets/mnist.nix {pkgs = pkgs-locked;};
             coco2014 = import datasets/coco/default.nix {pkgs = pkgs-locked;};
@@ -76,6 +83,9 @@
                   sha256 = "1n065xabx4rv85b2nyvpj510yr3fvri1h828y77a1vr5g6mhrv7q";
                 };
               });
+            };
+            sample-coco-images = img2coco {
+              dataset = sample-images;
             };
           };
           analysis = rec {
