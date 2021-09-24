@@ -29,7 +29,7 @@ for m in ["trains", "valids"]:
     with open(classes) as f:
         for i, n in enumerate(f.read().splitlines()):
             d["categories"].append({
-                "id": i,
+                "id": i+1,
                 "name": n,
                 "supercategory": n
             })
@@ -47,7 +47,7 @@ for m in ["trains", "valids"]:
                 reader = csv.reader(f, delimiter=' ')
                 l = [row for row in reader]
                 for i in l:
-                    category_id=int(i[0])
+                    category_id=int(i[0])+1
                     cx = float(i[1]) * width
                     cy = float(i[2]) * height
                     w = float(i[3]) * width
