@@ -12,8 +12,8 @@ out = sys.argv[2]
 classes = sys.argv[3]
 #filter = sys.argv[4]
 
-image_id = 0
-annotation_id = 0
+image_id = 1
+annotation_id = 1
 
 for m in ["trains", "valids"]:
     file_names = [
