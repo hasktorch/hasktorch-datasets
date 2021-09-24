@@ -28,7 +28,7 @@ in
       if [ ! -d  $out/annotations ] ; then
         mkdir -p $out/annotations
       fi
-      python img2coco.py ${dataset.out} $out ${datasetForLabels.out}/*.names
+      python img2coco.py $out $out ${datasetForLabels.out}/*.names
       
     '';    
     dontFixup = true;

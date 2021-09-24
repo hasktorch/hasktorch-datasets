@@ -16,8 +16,9 @@ image_id = 0
 annotation_id = 0
 
 for m in ["trains", "valids"]:
-    file_names = Path(bdd100k_out + "/images/" + m).glob('*.jpg')
-    
+    file_names = [
+        Path(bdd100k_out + "/images/" + m).glob('*.jpg') ,
+        Path(bdd100k_out + "/images/" + m).glob('*.png')]
     d={}
     d["images"]=[]
     d["annotations"]=[]
@@ -31,14 +32,15 @@ for m in ["trains", "valids"]:
                 "supercategory": n
             })
     
-    for file_name in file_names:
-        width, height = imagesize.get(file_name)
-        d["images"].append({
-            "file_name": str(file_name.name),
-            "height": height,
-            "width": width,
-            "id": image_id
-        })
-        image_id = image_id + 1
+    for file_names0 in file_names:
+        for file_name in file_names0:
+            width, height = imagesize.get(file_name)
+            d["images"].append({
+                "file_name": str(file_name.name),
+                "height": height,
+                "width": width,
+                "id": image_id
+            })
+            image_id = image_id + 1
     with open(out + '/annotations/' + m + '.json', 'w') as ff:
         json.dump(d, ff, indent=4)
