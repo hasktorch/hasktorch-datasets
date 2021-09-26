@@ -26,8 +26,9 @@ for m in ["trains", "valids"]:
 
     with open(classes) as f:
         for i, n in enumerate(f.read().splitlines()):
+            #coco's category_id starts at 1.
             d["categories"].append({
-                "id": i,
+                "id": i+1,
                 "name": n,
                 "supercategory": n
             })
