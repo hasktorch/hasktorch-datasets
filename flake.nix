@@ -3,7 +3,7 @@
   
   nixConfig = {
     # This is for getting pretrained models.
-    useSandbox = false;
+    # sandbox = false;
   };
   
   inputs = {
