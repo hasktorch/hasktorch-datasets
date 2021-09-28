@@ -70,4 +70,25 @@
             );
         m = models {inherit drvs; inherit prefix;};
     in builtins.listToAttrs m;
+
+  iota = n: start:
+    if n == 0
+    then []
+    else [start] ++ iota (n - 1) (start+1);
+  
+  trainingLoopDerivation = {
+    , epochs
+    , trainingDerivation
+    , scriptArgs'
+    }: 
+    in builtins.foldl'
+      (prev: epoch:
+        trainingDerivation {
+          pretrained = prev;
+          scriptArgs = scriptArgs' epoch;
+        }
+      ) (trainingDerivation {
+        scriptArgs = scriptArgs' 1;
+      }
+      ) (iota epochs 2);
 }
