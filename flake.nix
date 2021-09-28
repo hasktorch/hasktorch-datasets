@@ -107,7 +107,7 @@
               datasets =
                 (nixflow.flattenDerivations {
                   drvs = fasterrcnn-bdd100k-tests;
-                  prefix = "test-yolov5-bdd100k";
+                  prefix = "test-fasterrcnn-bdd100k";
                 }) // {
                   fasterrcnn-bdd100k-all =  fasterrcnn.test {
                     datasets = yolo2coco {
