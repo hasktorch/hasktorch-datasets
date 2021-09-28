@@ -1,6 +1,6 @@
 { pkgs
 }:
-{
+rec {
   src2drv = binaries:
     pkgs.stdenvNoCC.mkDerivation {
       pname = "src2drv";
@@ -76,12 +76,11 @@
     then []
     else [start] ++ iota (n - 1) (start+1);
   
-  trainingLoopDerivation = {
-    , epochs
+  trainingLoopDerivation =
+    { epochs
     , trainingDerivation
     , scriptArgs'
-    }: 
-    in builtins.foldl'
+    }: builtins.foldl'
       (prev: epoch:
         trainingDerivation {
           pretrained = prev;

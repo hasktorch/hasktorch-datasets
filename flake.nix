@@ -30,8 +30,8 @@
             }:
     flake-utils.lib.eachDefaultSystem (system:
       let nixflow = import ./nix/nixflow.nix {pkgs=pkgs-locked;};
-          pkgs = nixpkgs.legacyPackages.${system};
-          pkgs-locked = nixpkgs-locked.legacyPackages.${system};
+          pkgs = import nixpkgs {inherit system;};
+          pkgs-locked = import nixpkgs-locked {inherit system;};
           cml = import ./utils/cml/default.nix {inherit pkgs;};
           huggingface = import ./models/huggingface/default.nix {inherit pkgs;};
           
