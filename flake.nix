@@ -75,7 +75,10 @@
             bdd100k-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k; };
             bdd100k-mini = src2drv {};
             bdd100k-mini-coco = import datasets/yolo2coco/default.nix {pkgs = pkgs-locked; dataset = bdd100k-mini; };
-            bdd100k-subset = import datasets/bdd100k-subset/subsets.nix {pkgs = pkgs-locked;};
+            bdd100k-subset = import datasets/bdd100k-subset/subsets.nix {
+              pkgs = pkgs-locked;
+              inherit bdd100k;
+            };
             sample-images = src2drv {
               srcs = builtins.map builtins.fetchurl (builtins.attrValues {
                 data1 = {
@@ -115,6 +118,9 @@
                     };
                   };
                 }; 
+            };
+            fasterrcnn-bdd100k-detect = fasterrcnn.detect {
+              datasets = datasets.bdd100k-coco;
             };
           };
           

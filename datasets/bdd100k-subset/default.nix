@@ -1,6 +1,5 @@
-{ sources ? import ../../nix/sources.nix
-, pkgs ? import sources.nixpkgs {}
-, bdd100k ? import ../bdd100k/default.nix {}
+{ pkgs
+, bdd100k
 , name ? "subset"
 , filter ? " weather == 'rainy' "
 }:
