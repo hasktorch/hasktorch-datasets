@@ -297,11 +297,11 @@
         "poetry2nix": "poetry2nix_2"
       },
       "locked": {
-        "lastModified": 1632876943,
-        "narHash": "sha256-klv7uEzog/W/vehNwS/t38WRQfk1j5xt+pZEkXM7kNA=",
+        "lastModified": 1633394297,
+        "narHash": "sha256-//wcYcg1UJnfNwVKjVr4rxnD8EtbTRAOGo8Ea/0pEgM=",
         "owner": "junjihashimoto",
         "repo": "torchvision-fasterrcnn",
-        "rev": "675c158039466de159f1795338f8ced82012278c",
+        "rev": "0f6563cee326670709ead8a1a52acd36b513965a",
         "type": "github"
       },
       "original": {
