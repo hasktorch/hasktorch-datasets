@@ -90,6 +90,7 @@
             sample-coco-images = img2coco {
               dataset = sample-images;
             };
+            common-voice = import datasets/common-voice/default.nix {pkgs = pkgs-locked; };
           };
           analysis = rec {
             bdd100k-subset-yolov5 = import analysis/calc-map.nix {
