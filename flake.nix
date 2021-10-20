@@ -32,7 +32,8 @@
       let nixflow = import ./nix/nixflow.nix {pkgs=pkgs-locked;};
           pkgs = import nixpkgs {inherit system;};
           pkgs-locked = import nixpkgs-locked {inherit system;};
-          cml = import ./utils/cml/default.nix {inherit pkgs;};
+#          cml = import ./utils/cml/default.nix {inherit pkgs;};
+          cml = import ./utils/cml/non-sandbox.nix {inherit pkgs;};
           huggingface = import ./models/huggingface/default.nix {inherit pkgs;};
           
           torchvision = import ./models/torchvision/default.nix {inherit pkgs;};
