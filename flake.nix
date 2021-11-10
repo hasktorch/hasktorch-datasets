@@ -133,6 +133,7 @@
           datasets = {
             inherit yolo2coco;
             inherit img2coco;
+            inherit src2drv;
             mix = args@{...}: import utils/mix.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-filter = args@{...}: import datasets/bdd100k-subset/default.nix ({pkgs = pkgs-locked;} // args);
             bdd100k-subsets = args@{...}: {bdd100k = datasets.bdd100k;} // datasets.bdd100k-subset // args;
